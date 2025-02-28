@@ -12,5 +12,11 @@ In this repo you will learn :
             
             5- fastAPI 
 
+            6- python package 
+
+            7- Git&Github 
+
+
+
 And Some Projects To Master Python Using OOP 
 
