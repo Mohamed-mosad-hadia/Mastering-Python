@@ -16,6 +16,12 @@ In this repo you will learn :
 
             7- Git&Github 
 
+            8- CMD
+
+            9- build WorkFlow 
+
+            
+
 
 
 And Some Projects To Master Python Using OOP 
