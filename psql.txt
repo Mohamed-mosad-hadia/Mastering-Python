@@ -1,0 +1,33 @@
+-- مكان حفظ ملفات CSV
+\set output_dir '/Users/mosaad/Desktop/csv_exports'
+
+-- مكان ملف اللوج
+\set log_file '/Users/mosaad/Desktop/csv_exports/export.log'
+
+-- نبدأ اللوج
+\o :log_file
+\echo '=============================='
+\echo 'Export started at :' `date`
+\echo '=============================='
+
+-- توليد وتنفيذ أوامر التصدير
+SELECT
+    format(
+        '\echo Exporting %I.%I ...\n\copy %I.%I TO %L CSV HEADER',
+        table_schema,
+        table_name,
+        table_schema,
+        table_name,
+        :'output_dir' || '/' || table_schema || '.' || table_name || '.csv'
+    )
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_type = 'BASE TABLE';
+
+-- نهاية اللوج
+\echo '=============================='
+\echo 'Export finished at :' `date`
+\echo '=============================='
+
+-- نرجع الإخراج للـ terminal
+\o
