@@ -31,3 +31,47 @@ WHERE table_schema = 'public'
 
 -- نرجع الإخراج للـ terminal
 \o
+
+
+
+
+
+
+
+
+
+
+# convert CSV into Excel
+
+import pandas as pd
+from pathlib import Path
+
+# مسار ملفات CSV
+csv_dir = Path("/Users/mosaad/Desktop/csv_exports")
+
+# مسار ملفات Excel
+excel_dir = csv_dir / "excel_exports"
+excel_dir.mkdir(exist_ok=True)
+
+CHUNK_SIZE = 1_000_000 
+
+for csv_file in csv_dir.glob("*.csv"):
+    print(f"Processing {csv_file.name} ...")
+
+    excel_file = excel_dir / f"{csv_file.stem}.xlsx"
+
+    with pd.ExcelWriter(excel_file, engine="openpyxl") as writer:
+        for i, chunk in enumerate(
+            pd.read_csv(csv_file, chunksize=CHUNK_SIZE)
+        ):
+            chunk.to_excel(
+                writer,
+                sheet_name=f"part_{i+1}",
+                index=False
+            )
+
+    print(f"Finished {excel_file.name}")
+
+print("All CSV files converted successfully.")
+
+
