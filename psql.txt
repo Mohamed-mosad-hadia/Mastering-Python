@@ -1,3 +1,7 @@
+#--------------------------------------
+## Mac os  Version
+#--------------------------------------
+
 -- مكان حفظ ملفات CSV
 \set output_dir '/Users/mosaad/Desktop/csv_exports'
 
@@ -33,16 +37,55 @@ WHERE table_schema = 'public'
 \o
 
 
+#--------------------------------------
+## Windows Version
+#--------------------------------------
+-- مكان حفظ ملفات CSV على Windows
+\set output_dir 'C:/Users/Tuban/OneDrive/Desktop/CHI/csv_exports'
+
+-- مكان ملف اللوج
+\set log_file 'C:/Users/Tuban/OneDrive/Desktop/CHI/csv_exports/export.log'
+
+-- نبدأ اللوج: نوجّه الإخراج لملف اللوج
+\o :log_file
+\echo '=============================='
+\echo 'Export started at:'
+SELECT now();
+\echo '=============================='
+
+-- توليد وتنفيذ أوامر التصدير لكل الـ BASE TABLES في public
+SELECT
+    format(
+        '\echo Exporting %I.%I ...\n\copy %I.%I TO %L CSV HEADER',
+        table_schema,
+        table_name,
+        table_schema,
+        table_name,
+        :'output_dir' || '/' || table_schema || '.' || table_name || '.csv'
+    )
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_type = 'BASE TABLE'
+;
+\gexec
+
+-- نهاية اللوج
+\echo '=============================='
+\echo 'Export finished at:'
+SELECT now();
+\echo '=============================='
+
+-- رجوع الإخراج للـ terminal
+\o
 
 
 
 
 
 
-
-
-# convert CSV into Excel
-
+#--------------------------------------
+# convert CSV into Excel  using python
+#--------------------------------------
 import pandas as pd
 from pathlib import Path
 
@@ -73,5 +116,6 @@ for csv_file in csv_dir.glob("*.csv"):
     print(f"Finished {excel_file.name}")
 
 print("All CSV files converted successfully.")
+
 
 
